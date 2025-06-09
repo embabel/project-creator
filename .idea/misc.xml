@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Black">
     <option name="pathToExecutable" value="/opt/homebrew/anaconda3/bin/black" />
+    <option name="sdkName" value="Python 3.11 (mcp-stdio)" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="openjdk-22" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
