@@ -3,11 +3,24 @@ import argparse
 import os
 import shutil
 import subprocess
-
 import sys
 
 from project_creator.replace import replace_in_files, replace_package_structure
 from project_creator.variables import Variables, Variable
+
+# Repository options
+REPO_OPTIONS = {
+    "1": {
+        "name": "Kotlin Agent Template",
+        "url": "https://github.com/embabel/kotlin-agent-template",
+        "description": "Kotlin agent template - https://github.com/embabel/kotlin-agent-template",
+    },
+    "2": {
+        "name": "Java Agent Template",
+        "url": "https://github.com/embabel/java-agent-template",
+        "description": "Java agent template - https://github.com/embabel/java-agent-template",
+    },
+}
 
 
 def run_command(cmd, cwd=None):
@@ -18,12 +31,32 @@ def run_command(cmd, cwd=None):
     return result.stdout.strip()
 
 
+def select_repository():
+    """Display repository options and get user selection"""
+    print("\n📚 Available template repositories:")
+    for key, repo in REPO_OPTIONS.items():
+        print(f"  {key}. {repo['name']} - {repo['description']}")
+
+    while True:
+        choice = input(
+            f"\nSelect repository (1-{len(REPO_OPTIONS)}) [default: 1]: "
+        ).strip()
+        if not choice:
+            choice = "1"
+
+        if choice in REPO_OPTIONS:
+            selected_repo = REPO_OPTIONS[choice]
+            print(f"✅ Selected: {selected_repo['name']}")
+            return selected_repo["url"]
+        else:
+            print(f"❌ Invalid choice. Please select 1-{len(REPO_OPTIONS)}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Create a new project from a template")
     parser.add_argument(
         "--repo",
-        help="Template repository URL",
-        default="https://github.com/embabel/kotlin-agent-template",
+        help="Template repository URL or selection number (1=Kotlin, 2=Java)",
     )
     parser.add_argument("--project-name", help="Project name")
     parser.add_argument("--package", help="Package name (e.g., com.example.myproject)")
@@ -32,11 +65,15 @@ def main():
 
     # Get repo URL
     template_repo = args.repo
-    # if not template_repo:
-    #     template_repo = input("Template repository URL: ").strip()
-    #     if not template_repo:
-    #         print("Repository URL is required!")
-    #         sys.exit(1)
+    if template_repo:
+        # Check if it's a selection number
+        if template_repo in REPO_OPTIONS:
+            template_repo = REPO_OPTIONS[template_repo]["url"]
+            print(f"✅ Using {REPO_OPTIONS[args.repo]['name']}")
+        # Otherwise assume it's a direct URL
+    else:
+        # Interactive selection
+        template_repo = select_repository()
 
     # Get project name
     project_name = args.project_name
