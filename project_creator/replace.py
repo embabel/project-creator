@@ -2,6 +2,7 @@ import os
 import shutil
 
 DEFAULT_EXTENSIONS = [
+    ".java",
     ".kt",
     ".kts",
     ".properties",
