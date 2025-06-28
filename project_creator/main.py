@@ -5,7 +5,11 @@ import shutil
 import subprocess
 import sys
 
-from project_creator.replace import replace_in_files, replace_package_structure
+from project_creator.replace import (
+    replace_in_files,
+    replace_in_file_names,
+    replace_package_structure
+)
 from project_creator.variables import Variables, Variable
 
 # Repository options
@@ -120,11 +124,13 @@ def main():
     # Handle package structure changes
     # We need to do this after the file content replacements
     for var in variables.variables:
+        print(
+            f"🔄 Replacing '{var.old}' with '{var.new}' in file names in {project_name}..."
+        )
         if var.in_path:
-            print(
-                f"🔄 Replacing '{var.old}' with '{var.new}' in file names in {project_name}..."
-            )
             replace_package_structure(project_name, var.old, var.new)
+        else:
+            replace_in_file_names(project_name, var.old, var.new)
 
     # Clean up git history and reinitialize
     shutil.rmtree(f"{lower_project_name}/.git")
